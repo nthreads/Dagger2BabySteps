@@ -9,18 +9,21 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    val info : Info = Info()
+    @Inject lateinit var info : Info
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        DaggerMainActivity_InfoComponent.create().inject(this)
         textView.text = info.text
     }
 
-    class Info {
+    class Info @Inject constructor(){
         val text = "I have some info"
     }
 
-
+    @Component
+    interface InfoComponent {
+        fun inject(activity: MainActivity)
+    }
 }
