@@ -7,10 +7,23 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
+import javax.inject.Named
+
 
 class MainActivity : AppCompatActivity() {
 
-    @Inject lateinit var info : Info
+    companion object {
+        const val BASIC  = "Basic"
+        const val CLASSIFIED  = "Classified"
+    }
+
+    @Inject
+    @field:Named(BASIC)
+    lateinit var basicInfo : Info
+
+    @Inject
+    @field:Named(CLASSIFIED)
+    lateinit var classifiedInfo : Info
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         DaggerMainActivity_InfoComponent.create().inject(this)
 
-        textView.text = info.text
+        textView.text = "${basicInfo.text} \n ${classifiedInfo.text}"
     }
 
     class Info (var text : String)
@@ -31,8 +44,17 @@ class MainActivity : AppCompatActivity() {
     @Module
     class InfoModule {
         @Provides
-        fun provideInfo() : Info {
-            return Info("Get info through constructor")
+        @Named(BASIC)
+        fun provideBasicInfo() : Info {
+            return Info("Get basic basicInfo through constructor")
+        }
+
+        @Provides
+        @Named(CLASSIFIED)
+        fun provideClassifiedInfo() : Info {
+            return Info("Hey, i have some classified basicInfo")
         }
     }
+
+
 }
